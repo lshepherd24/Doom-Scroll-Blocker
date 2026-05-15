@@ -19,7 +19,7 @@ chrome.runtime.onInstalled.addListener( () =>
 
     chrome.storage.local.set(
         {
-            sessionLimitMinutes: 0.2, isSessionActive: false, isBlocked: false
+            sessionLimitMinutes: 0.1, isSessionActive: false, isBlocked: false
         }
     );
 });
@@ -40,12 +40,26 @@ setInterval( () =>
 
                 if (elapsedTimeMinutes >= data.sessionLimitMinutes)
                 {
-                    chrome.storage.local.set(
-                        {
-                            isBlocked: true
-                        }  
-                    );
-                    console.log("Session limit reached.");
+                    chrome.storage.local.get(["sessionHistory"], (historyData) => 
+                    {
+                        const sessionHistory = historyData.sessionHistory || [];
+
+                        sessionHistory.push
+                        (
+                            {
+                                sessionStartTime:data.sessionStartTime, sessionEndTime:Date.now(), 
+                                    sessionLimitMinutes:data.sessionLimitMinutes, actualDurationMinutes:elapsedTimeMinutes
+                            }
+                        );
+
+                        chrome.storage.local.set(
+                            {
+                                sessionHistory:sessionHistory, isBlocked:true
+                            }
+                        );
+                    });
+                
+                    console.log("Session limit reached");
                 }
             }
         }

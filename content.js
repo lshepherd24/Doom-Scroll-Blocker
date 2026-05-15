@@ -64,6 +64,9 @@ function showBlockScreen()
     unlockButton.textContent = "Unlock";
     unlockButton.style.display = "none";
 
+    //task suggestion
+    const suggestionContainer = document.createElement("div");
+
     //--------------------------visuals----------------------------------------
     //blocker dimensions 
     blockScreen.style.position = "fixed";
@@ -101,16 +104,103 @@ function showBlockScreen()
     unlockButton.style.padding = "10px";
     unlockButton.style.fontSize = "20px";
 
+    //styling for suggestions container
+    suggestionContainer.style.display = "flex";
+    suggestionContainer.style.flexWrap = "wrap";
+    suggestionContainer.style.justifyContent = "center";
+    suggestionContainer.style.marginTop = "20px";
+    suggestionContainer.style.gap = "10px";
+
 //------------------event listeners----------------------------------------------
+
+
+    chrome.storage.local.get(["savedTasks"], (data) => 
+    {
+        const savedTasks = data.savedTasks || [];
+        for (let i = 0; i < savedTasks.length; i++)
+        {
+            const task = savedTasks[i];
+            for (let j = 0; j < task.durations.length; j++)
+            {
+                const duration = task.durations[j];
+                const suggestionButton = document.createElement("button");
+
+                suggestionButton.textContent = task.name + " (" + duration + ")";
+
+                suggestionButton.addEventListener("click", () => 
+                {
+                    taskInput.value = task.name;
+                    durationInput.value = duration;
+                });
+
+                suggestionContainer.appendChild(suggestionButton);
+            }
+        }
+    });
 
     beginTaskButton.addEventListener("click", () =>
     {
-        const taskName = taskInput.value;
+        const taskName = taskInput.value.trim().toLowerCase();
         const taskDuration = Number(durationInput.value);
+
+        //gets exisiting saved tasks, if none available then adds new task to array and saves
+        chrome.storage.local.get(["savedTasks"], (data) =>
+        {
+            const savedTasks = data.savedTasks || []; 
+
+            let existingTask = null;
+            for (let i = 0; i < savedTasks.length; i++)
+            {
+                if (savedTasks[i].name === taskName)
+                {
+                    existingTask = savedTasks[i];
+                }
+            }
+            
+            if (existingTask === null)
+            {
+                savedTasks.push(
+                    {
+                        name:taskName, durations: [taskDuration]
+                    }
+                );
+            }
+            else
+            {
+                if (!existingTask.durations.includes(taskDuration))
+                {
+                    existingTask.durations.push(taskDuration);
+                }
+            }
+
+            chrome.storage.local.set(
+                {
+                    savedTasks: savedTasks
+                }
+            );
+        });
 
         //at least half that time of a specific duration must pass before unlock elegible (if task = 1hr then at least 30 mins pass before unlock)
         const unlockMinutes = taskDuration / 2;
         const unlockTime = Date.now() + unlockMinutes * 60 * 1000
+
+        chrome.storage.local.get(["taskHistory"], (data) =>
+        {
+            const taskHistory = data.taskHistory || [];
+            taskHistory.push
+            (
+                {
+                    taskName:taskName, taskDuration:taskDuration, taskStartTime:Date.now(), unlockMinutes:unlockMinutes, unlockTime:unlockTime
+                }
+            );
+
+            chrome.storage.local.set
+            (
+                {
+                    taskHistory: taskHistory
+                }
+            );
+        });
         
         chrome.storage.local.set(
             {
@@ -168,6 +258,7 @@ function showBlockScreen()
     blockScreen.appendChild(durationInput);
     blockScreen.appendChild(beginTaskButton);
     blockScreen.appendChild(unlockButton);
+    blockScreen.appendChild(suggestionContainer);
 
     document.body.appendChild(blockScreen);
 }
