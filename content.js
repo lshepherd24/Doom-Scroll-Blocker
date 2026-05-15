@@ -125,6 +125,19 @@ function showBlockScreen()
         beginTaskButton.remove();
 
         unlockButton.style.display = "block";
+
+        setInterval( () => 
+        {
+            const timeLeftSeconds = Math.ceil((unlockTime - Date.now()) / 1000);
+            if (timeLeftSeconds > 0)
+            {
+                message.textContent = "Task started: " + taskName + "\nUnlock available in " + timeLeftSeconds + " seconds";
+            }
+            else 
+            {
+                message.textContent = "Task mostly complete. Unlock available"
+            }
+        }, 1000);
     });
 
     unlockButton.addEventListener("click", () => 
@@ -138,7 +151,7 @@ function showBlockScreen()
                         isBlocked:false, isSessionActive:false, sessionStartTime:null
                     }
                 );
-                
+
                 blockScreen.remove();
             }
             else
