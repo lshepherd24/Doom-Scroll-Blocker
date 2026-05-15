@@ -50,6 +50,6 @@ setInterval( () =>
             }
         }
     );
-//run every 5000 milliseconds (5 sec)
-}, 5000);
+//run every 1000 milliseconds (1 sec)
+}, 1000);
 
