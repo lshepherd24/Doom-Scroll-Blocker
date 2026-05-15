@@ -1,0 +1,11 @@
+{
+    "manifest_version": 3,
+    "name": "Doom Scroll Blocker",
+    "version": "1.0.0", 
+    "description": "Browser extension that tracks scrolling sessions and blocks doom scrolling by using session limits on selected websites", 
+    "permissions": ["storage", "tabs"],
+    "host_permissions": ["*://*.youtube.com/*", "*://*.instagram.com/*", "*://*.tiktok.com/*"],
+    "background": {"service_worker": "background.js"},
+    "action":{ "default_popup": "popup.html", "default_title": "Doom Scroll Blocker"},
+    "content_scripts": [{"matches": ["*://*.youtube.com/*", "*://*.instagram.com/*", "*://*.tiktok.com/*"], "js": ["content.js"]}]
+}
