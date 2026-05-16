@@ -75,4 +75,4 @@ Planned Future Work
         - SQLite database 
         - website dashboard
         - productivity statistics and visuals 
-        - streak tracking / scoring system? 
+        - streak tracking / scoring system?  
