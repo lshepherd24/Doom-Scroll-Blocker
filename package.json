@@ -1,0 +1,16 @@
+{
+  "name": "doom-scroll-blocker",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "node scripts/build.js",
+    "dev": "node scripts/build.js --watch"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
