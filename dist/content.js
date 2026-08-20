@@ -37,7 +37,9 @@
   }
   function upsertSavedTask(savedTasks, taskName, taskDuration) {
     const tasks = [...savedTasks];
-    const existingTask = tasks.find((task) => task.name === taskName);
+    const existingTask = tasks.find(function(task) {
+      return task.name === taskName;
+    });
     if (!existingTask) {
       tasks.push({
         name: taskName,

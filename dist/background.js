@@ -14,6 +14,7 @@
   };
   function getDefaultInstallState() {
     return {
+      //Take bundle and use for defualt settings
       ...DEFAULT_SETTINGS,
       isSessionActive: false,
       isBlocked: false,
@@ -58,8 +59,8 @@
       endedBy
     };
   }
-  function appendSessionHistory(sessionHistory, record) {
-    return [...sessionHistory || [], record];
+  function appendSessionHistory(sessionHistory, newRecord) {
+    return [...sessionHistory || [], newRecord];
   }
 
   // packages/core/storage/chrome.js

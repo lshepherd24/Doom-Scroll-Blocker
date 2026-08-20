@@ -37,8 +37,8 @@
       endedBy
     };
   }
-  function appendSessionHistory(sessionHistory, record) {
-    return [...sessionHistory || [], record];
+  function appendSessionHistory(sessionHistory, newRecord) {
+    return [...sessionHistory || [], newRecord];
   }
 
   // packages/core/storage/chrome.js
