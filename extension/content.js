@@ -14,6 +14,7 @@ import * as storage from "@doom-scroll/core/storage/chrome";
 
 console.log("Content script loaded.");
 
+//Stores identifier returned by setInterval, null at first because no countdown exists yet
 let countdownIntervalId = null;
 
 function clearCountdownInterval() {
@@ -31,12 +32,14 @@ async function initBlockScreen() {
   }
 }
 
+
 storage.onChange((changes, areaName) => {
   if (areaName === "local" && changes.isBlocked?.newValue === true) {
     showBlockScreen();
   }
 });
 
+//Creates blocker interface
 function showBlockScreen() {
   if (document.getElementById("doomScrollBlockScreen") != null) {
     return;
